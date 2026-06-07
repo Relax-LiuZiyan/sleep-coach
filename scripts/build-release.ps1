@@ -6,6 +6,7 @@ $specPath = Join-Path $repoRoot "SleepCoach.spec"
 $installerScript = Join-Path $repoRoot "installer\SleepCoach.iss"
 $distExe = Join-Path $repoRoot "dist\SleepCoach\SleepCoach.exe"
 $releaseExe = Join-Path $repoRoot "release\SleepCoach-Setup.exe"
+$portableZip = Join-Path $repoRoot "release\SleepCoach-portable.zip"
 
 function Resolve-IsccPath {
     $command = Get-Command iscc -ErrorAction SilentlyContinue
@@ -46,6 +47,15 @@ if (-not (Test-Path $distExe)) {
     throw "PyInstaller build completed but $distExe was not found."
 }
 
+New-Item -ItemType Directory -Path (Join-Path $repoRoot "release") -Force | Out-Null
+
+Write-Host "Creating portable ZIP..."
+Compress-Archive -Path (Join-Path $repoRoot "dist\SleepCoach\*") -DestinationPath $portableZip -Force
+
+if (-not (Test-Path $portableZip)) {
+    throw "Portable ZIP build completed but $portableZip was not found."
+}
+
 $iscc = Resolve-IsccPath
 
 Write-Host "Building installer..."
@@ -57,4 +67,5 @@ if (-not (Test-Path $releaseExe)) {
 
 Write-Host "Build complete:"
 Write-Host "  Bundle  : $distExe"
+Write-Host "  Portable : $portableZip"
 Write-Host "  Installer: $releaseExe"

@@ -1,0 +1,67 @@
+name: Build and Release Windows Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install Python dependencies
+        shell: powershell
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pytest pyinstaller
+
+      - name: Install Inno Setup
+        shell: powershell
+        run: choco install innosetup --no-progress -y
+
+      - name: Build release assets
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sleep-coach-windows-release
+          path: |
+            release/SleepCoach-Setup.exe
+            release/SleepCoach-portable.zip
+          if-no-files-found: error
+
+      - name: Publish GitHub release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v3
+        with:
+          name: Sleep Coach ${{ github.ref_name }}
+          generate_release_notes: true
+          body: |
+            Windows release assets for Sleep Coach.
+
+            Included files:
+            - SleepCoach-Setup.exe
+            - SleepCoach-portable.zip
+
+            Before first launch, please read the README safety notes. This app can trigger a real Windows shutdown based on its configured rules.
+          files: |
+            release/SleepCoach-Setup.exe
+            release/SleepCoach-portable.zip
+          fail_on_unmatched_files: true
+          preserve_order: true

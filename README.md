@@ -353,6 +353,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
 构建完成后，主要产物位置如下：
 
 - 可运行目录版：`dist\SleepCoach\`
+- 免安装压缩包：`release\SleepCoach-portable.zip`
 - Windows 安装包：`release\SleepCoach-Setup.exe`
 
 ### 相关文件
@@ -360,6 +361,15 @@ powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
 - `SleepCoach.spec`：PyInstaller 配置
 - `installer\SleepCoach.iss`：Inno Setup 安装器脚本
 - `scripts\build-release.ps1`：一键构建脚本
+- `.github/workflows/release.yml`：GitHub Actions 自动构建与发布流程
+
+### 自动发布
+
+仓库已经配置好 GitHub Actions：
+
+- 当你推送类似 `v0.1.1`、`v0.2.0` 这样的标签时
+- GitHub 会自动在 Windows runner 上构建安装包和便携版
+- 并把它们上传到对应的 GitHub Release
 
 更多协作细节请阅读 `CONTRIBUTING.md`。
 
