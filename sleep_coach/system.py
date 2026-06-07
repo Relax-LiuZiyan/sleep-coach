@@ -5,13 +5,29 @@ import subprocess
 from pathlib import Path
 
 
+def build_startup_command(
+    *,
+    executable_path: Path,
+    working_directory: Path,
+    frozen: bool,
+) -> str:
+    if frozen:
+        return f'@echo off\r\ncd /d "{working_directory}"\r\nstart "" "{executable_path}"\r\n'
+
+    pythonw = executable_path.with_name("pythonw.exe")
+    interpreter = pythonw if executable_path.name.lower() == "python.exe" else executable_path
+    return f'@echo off\r\ncd /d "{working_directory}"\r\nstart "" "{interpreter}" "{working_directory / "run.py"}"\r\n'
+
+
 def configure_launch_on_startup(enabled: bool, project_root: Path) -> None:
     startup_dir = Path.home() / "AppData" / "Roaming" / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "Startup"
     startup_dir.mkdir(parents=True, exist_ok=True)
     launcher = startup_dir / "sleep-coach.cmd"
-    pythonw = Path(os.sys.executable).with_name("pythonw.exe")
-    interpreter = pythonw if pythonw.exists() else Path(os.sys.executable)
-    command = f'@echo off\r\ncd /d "{project_root}"\r\nstart "" "{interpreter}" "{project_root / "run.py"}"\r\n'
+    command = build_startup_command(
+        executable_path=Path(os.sys.executable),
+        working_directory=project_root,
+        frozen=bool(getattr(os.sys, "frozen", False)),
+    )
 
     if enabled:
         launcher.write_text(command, encoding="utf-8")

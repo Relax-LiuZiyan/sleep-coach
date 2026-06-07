@@ -30,6 +30,7 @@ sleep_coach.db
 # Build / packaging
 build/
 dist/
+release/
 *.egg-info/
 
 # Internal planning artifacts

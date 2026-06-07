@@ -91,6 +91,17 @@ python run.py
 - `run.py` 适合开发、调试和手动运行。
 - `launch_sleep_coach.pyw` 不会弹出终端窗口，更适合日常使用。
 
+## 给普通用户的安装方式
+
+如果你不想自己安装 Python 和依赖库，推荐直接使用 GitHub Releases 里的 Windows 安装包：
+
+- 进入仓库的 `Releases` 页面
+- 下载 `SleepCoach-Setup.exe`
+- 双击安装
+- 安装完成后从开始菜单或桌面快捷方式启动
+
+这类安装包适合普通用户，不需要手动配置 Python 环境。
+
 ## 首次使用建议
 
 第一次体验时，强烈建议先禁用真实关机，确认程序行为符合你的预期后，再恢复默认行为。
@@ -320,6 +331,35 @@ sleep-coach/
 - 规则时间、跨夜判断、周末定义和统计逻辑都集中在核心模块里
 - 修改这类逻辑前，最好先在禁用真实关机的模式下验证
 - 不要把你的本地数据库、日志或个人运行数据提交到仓库
+
+## 构建 Windows 安装包
+
+项目已经内置了基于 `PyInstaller + Inno Setup` 的打包流程，适合后续继续复用。
+
+### 打包前准备
+
+- 安装 Python 依赖
+- 安装 `PyInstaller`
+- 安装 `Inno Setup 6`
+
+### 一键构建
+
+在项目根目录运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
+```
+
+构建完成后，主要产物位置如下：
+
+- 可运行目录版：`dist\SleepCoach\`
+- Windows 安装包：`release\SleepCoach-Setup.exe`
+
+### 相关文件
+
+- `SleepCoach.spec`：PyInstaller 配置
+- `installer\SleepCoach.iss`：Inno Setup 安装器脚本
+- `scripts\build-release.ps1`：一键构建脚本
 
 更多协作细节请阅读 `CONTRIBUTING.md`。
 

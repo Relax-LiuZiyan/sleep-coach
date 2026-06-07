@@ -8,22 +8,15 @@ from PySide6.QtGui import QAction, QGuiApplication, QIcon
 from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QStyle, QSystemTrayIcon, QWidget
 
 from .controller import SleepCoachController
+from .runtime import app_icon_path, launch_working_directory
 from .ui.main_window import MainWindow
 from .ui.overlay import OverlayWindow
 from .ui.styles import build_app_style
 from .ui.top_bar import TopBarWindow
 
 
-def app_root() -> Path:
+def app_root():
     return Path.home() / ".sleep-coach"
-
-
-def workspace_root() -> Path:
-    return Path(__file__).resolve().parent.parent
-
-
-def app_icon_path() -> Path:
-    return workspace_root() / "sleep_coach" / "assets" / "sleep_coach.ico"
 
 
 def handle_overlay_sleep_now(controller: SleepCoachController) -> None:
@@ -112,7 +105,7 @@ def main() -> int:
     if not icon.isNull():
         app.setWindowIcon(icon)
 
-    project_root = workspace_root()
+    project_root = launch_working_directory()
     controller = SleepCoachController(app_root(), project_root)
     controller.tick()
     main_window = MainWindow(controller.snapshot)

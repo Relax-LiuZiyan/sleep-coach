@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- PyInstaller build spec for Windows desktop packaging
+- Inno Setup installer script
+- PowerShell build script for generating `SleepCoach-Setup.exe`
+
 ## [0.1.0] - 2026-06-07
 
 ### Added
