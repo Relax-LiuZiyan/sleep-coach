@@ -1,5 +1,5 @@
 #define AppName "Sleep Coach"
-#define AppVersion "0.1.0"
+#define AppVersion "0.1.2"
 #define AppPublisher "Relax-LiuZiyan"
 #define AppURL "https://github.com/Relax-LiuZiyan/sleep-coach"
 #define AppExeName "SleepCoach.exe"

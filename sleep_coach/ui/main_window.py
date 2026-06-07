@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PySide6.QtCore import QTime, Qt, QTimer, Signal
+from PySide6.QtCore import QEvent, QTime, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QAbstractSpinBox,
@@ -147,6 +147,7 @@ class MainWindow(QMainWindow):
         self._scaled_widths: list[tuple[QWidget, int]] = []
         self.record_cells: dict[str, QLabel] = {}
 
+        self.setWindowFlag(Qt.WindowType.Tool, True)
         self.setWindowTitle("Sleep Coach")
         self.resize(1480, 1040)
         self.setMinimumSize(1460, 1000)
@@ -740,12 +741,26 @@ class MainWindow(QMainWindow):
         super().resizeEvent(event)
         self._apply_scale()
 
+    def changeEvent(self, event) -> None:  # type: ignore[override]
+        super().changeEvent(event)
+        if (
+            not self._allow_close
+            and event.type() == QEvent.Type.WindowStateChange
+            and self.isMinimized()
+        ):
+            QTimer.singleShot(0, self._hide_to_tray)
+
     def closeEvent(self, event) -> None:  # type: ignore[override]
         if self._allow_close:
             event.accept()
             return
         event.ignore()
-        self.showMinimized()
+        self._hide_to_tray()
+
+    def _hide_to_tray(self) -> None:
+        if self.isMinimized():
+            self.setWindowState(self.windowState() & ~Qt.WindowState.WindowMinimized)
+        self.hide()
 
     def prepare_to_quit(self) -> None:
         self._allow_close = True

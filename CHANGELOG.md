@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-07
+
+### Changed
+
+- Main window now hides to the system tray when minimized or closed, so background running behaves more consistently on Windows.
+
+## [0.1.1] - 2026-06-07
+
 ### Added
 
 - PyInstaller build spec for Windows desktop packaging
