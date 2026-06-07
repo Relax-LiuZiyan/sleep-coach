@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / editor
+.idea/
+.vscode/
+*.suo
+*.user
+*.userossc
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local app/runtime data
+*.log
+launcher-error.log
+sleep_coach.db
+.sleep-coach/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Internal planning artifacts
+docs/superpowers/
