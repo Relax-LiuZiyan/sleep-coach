@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Windows installer version is now resolved automatically from the release tag or `SLEEP_COACH_VERSION`, with a development fallback for local builds.
+
 ## [0.1.2] - 2026-06-07
 
 ### Changed

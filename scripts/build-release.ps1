@@ -8,6 +8,20 @@ $distExe = Join-Path $repoRoot "dist\SleepCoach\SleepCoach.exe"
 $releaseExe = Join-Path $repoRoot "release\SleepCoach-Setup.exe"
 $portableZip = Join-Path $repoRoot "release\SleepCoach-portable.zip"
 
+function Resolve-ReleaseVersion {
+    $version = python -m sleep_coach.release_version
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to resolve release version."
+    }
+
+    $resolved = $version.Trim()
+    if (-not $resolved) {
+        throw "Release version resolved to an empty string."
+    }
+
+    return $resolved
+}
+
 function Resolve-IsccPath {
     $command = Get-Command iscc -ErrorAction SilentlyContinue
     if ($command) {
@@ -57,9 +71,11 @@ if (-not (Test-Path $portableZip)) {
 }
 
 $iscc = Resolve-IsccPath
+$appVersion = Resolve-ReleaseVersion
 
+Write-Host "Resolved release version: $appVersion"
 Write-Host "Building installer..."
-& $iscc $installerScript
+& $iscc "/DAppVersion=$appVersion" $installerScript
 
 if (-not (Test-Path $releaseExe)) {
     throw "Installer build completed but $releaseExe was not found."

@@ -383,6 +383,21 @@ powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
 - 免安装压缩包：`release\SleepCoach-portable.zip`
 - Windows 安装包：`release\SleepCoach-Setup.exe`
 
+### 版本号自动处理
+
+现在安装包版本号已经接入自动处理，后续一般不需要再手动修改 `installer\SleepCoach.iss` 里的版本：
+
+- 在 GitHub Actions 中发版时，会自动读取标签名，例如 `v0.1.3`
+- 安装器最终会自动使用 `0.1.3` 作为安装包版本号
+- 本地手动打包时，如果你也想指定版本，可以先设置环境变量：
+
+```powershell
+$env:SLEEP_COACH_VERSION="0.1.3"
+powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
+```
+
+如果本地既没有设置 `SLEEP_COACH_VERSION`，当前提交也没有对应的 Git 标签，脚本会回退到开发版号 `0.0.0-dev`，以避免构建失败。
+
 ### 相关文件
 
 - `SleepCoach.spec`：PyInstaller 配置
