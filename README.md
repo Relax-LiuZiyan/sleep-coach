@@ -30,11 +30,26 @@ Sleep Coach 是一个本地运行的 Windows 桌面应用，适合希望减少�
 
 - 当前仅支持 Windows。
 - 项目设计目标是桌面环境，不适用于 Linux、macOS 或移动端。
-- 项目目前不是安装包形式，默认以源码方式运行。
+- 普通用户可以直接使用 GitHub Releases 里的安装包或免安装便携版。
+- 如果你是开发者，或者你希望自行修改源码，也可以按下文的 Python 方式运行。
+
+## 下载与安装
+
+如果你只是想直接使用软件，推荐优先下载 Release 里的成品包：
+
+- 安装版：`SleepCoach-Setup.exe`
+- 免安装便携版：`SleepCoach-portable.zip`
+- 发布页：<https://github.com/Relax-LiuZiyan/sleep-coach/releases/latest>
+
+请特别注意：
+
+- `SleepCoach-Setup.exe` 才是最适合普通用户的安装包，双击即可安装。
+- `SleepCoach-portable.zip` 是免安装版本，解压后可直接运行。
+- GitHub 页面里自动生成的 `Source code (zip)` 和 `Source code (tar.gz)` 是源码压缩包，不是安装包，下载后不能像普通软件那样直接安装使用。
 
 ## 预装环境
 
-在开始前，请先确保你的电脑已经具备以下环境：
+如果你准备按“源码运行”的方式使用本项目，请先确保你的电脑已经具备以下环境：
 
 - Python 3.11 或更高版本
 - `pip`，通常会随 Python 一起安装
@@ -95,12 +110,24 @@ python run.py
 
 如果你不想自己安装 Python 和依赖库，推荐直接使用 GitHub Releases 里的 Windows 安装包：
 
-- 进入仓库的 `Releases` 页面
+- 进入仓库的 `Releases` 页面：
+  `https://github.com/Relax-LiuZiyan/sleep-coach/releases/latest`
 - 下载 `SleepCoach-Setup.exe`
 - 双击安装
 - 安装完成后从开始菜单或桌面快捷方式启动
 
 这类安装包适合普通用户，不需要手动配置 Python 环境。
+
+如果你不想安装到系统里，也可以下载 `SleepCoach-portable.zip`：
+
+- 解压到任意你有权限访问的目录
+- 进入解压后的文件夹
+- 双击其中的 `SleepCoach.exe` 启动
+
+再次提醒：
+
+- `SleepCoach-Setup.exe` 和 `SleepCoach-portable.zip` 才是给最终用户准备的可运行版本
+- GitHub 自动附带的源码压缩包仅供查看或下载源码，不适合普通用户直接使用
 
 ## 首次使用建议
 
