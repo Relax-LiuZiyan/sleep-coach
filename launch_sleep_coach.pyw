@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import traceback
 from pathlib import Path
 
@@ -21,7 +22,7 @@ def _write_error_log(message: str) -> None:
 
 if __name__ == "__main__":
     try:
-        raise SystemExit(main())
+        raise SystemExit(main(sys.argv))
     except SystemExit:
         raise
     except Exception:

@@ -8,8 +8,19 @@ $distExe = Join-Path $repoRoot "dist\SleepCoach\SleepCoach.exe"
 $releaseExe = Join-Path $repoRoot "release\SleepCoach-Setup.exe"
 $portableZip = Join-Path $repoRoot "release\SleepCoach-portable.zip"
 
+function Assert-LastExitCode {
+    param(
+        [string]$StepName
+    )
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "$StepName failed with exit code $LASTEXITCODE."
+    }
+}
+
 function Resolve-ReleaseVersion {
     $version = python -m sleep_coach.release_version
+    Assert-LastExitCode "Release version resolution"
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to resolve release version."
     }
@@ -44,7 +55,8 @@ function Resolve-IsccPath {
 }
 
 Write-Host "Running packaging tests..."
-pytest tests/test_runtime_paths.py tests/test_startup.py -q
+pytest tests -q
+Assert-LastExitCode "Packaging tests"
 
 Write-Host "Cleaning previous build artifacts..."
 foreach ($path in @("build", "dist", "release")) {
@@ -56,6 +68,7 @@ foreach ($path in @("build", "dist", "release")) {
 
 Write-Host "Building PyInstaller bundle..."
 python -m PyInstaller --noconfirm --clean $specPath
+Assert-LastExitCode "PyInstaller build"
 
 if (-not (Test-Path $distExe)) {
     throw "PyInstaller build completed but $distExe was not found."
@@ -76,6 +89,7 @@ $appVersion = Resolve-ReleaseVersion
 Write-Host "Resolved release version: $appVersion"
 Write-Host "Building installer..."
 & $iscc "/DAppVersion=$appVersion" $installerScript
+Assert-LastExitCode "Installer build"
 
 if (-not (Test-Path $releaseExe)) {
     throw "Installer build completed but $releaseExe was not found."

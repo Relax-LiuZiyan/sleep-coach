@@ -14,9 +14,16 @@ from .ui.overlay import OverlayWindow
 from .ui.styles import build_app_style
 from .ui.top_bar import TopBarWindow
 
+ATTENTION_STAGES = {"warning", "overtime", "fullscreen", "penalty"}
+
 
 def app_root():
     return Path.home() / ".sleep-coach"
+
+
+def should_show_main_window(argv: list[str] | None = None) -> bool:
+    args = argv if argv is not None else sys.argv
+    return "--show" in args
 
 
 def handle_overlay_sleep_now(controller: SleepCoachController) -> None:
@@ -95,9 +102,10 @@ def build_tray(
     return tray
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    launch_args = argv if argv is not None else sys.argv
     QGuiApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    app = QApplication(sys.argv)
+    app = QApplication(launch_args)
     app.setApplicationName("Sleep Coach")
     app.setQuitOnLastWindowClosed(False)
     app.setStyleSheet(build_app_style(1.0))
@@ -120,12 +128,21 @@ def main() -> int:
         overlay.setWindowIcon(icon)
         top_bar.setWindowIcon(icon)
     tray = build_tray(app, controller, main_window, extra_windows=[top_bar, overlay])
+    show_main_window = should_show_main_window(launch_args)
+    last_attention_stage: dict[str, str | None] = {"value": None}
 
     def apply_snapshot(snapshot) -> None:
         main_window.update_snapshot(snapshot)
         top_bar.update_snapshot(snapshot)
         top_bar.apply_settings(snapshot)
         overlay.update_snapshot(snapshot)
+        previous_stage = last_attention_stage["value"]
+        current_stage = snapshot.stage
+
+        if current_stage in ATTENTION_STAGES and current_stage != previous_stage:
+            top_bar.show()
+            top_bar.raise_()
+            top_bar.activateWindow()
 
         if snapshot.stage in {"fullscreen", "penalty"}:
             screen = app.primaryScreen()
@@ -136,6 +153,8 @@ def main() -> int:
             overlay.activateWindow()
         else:
             overlay.hide()
+
+        last_attention_stage["value"] = current_stage
 
     def request_overtime() -> None:
         ok, message = controller.request_overtime()
@@ -159,7 +178,8 @@ def main() -> int:
 
     controller.start()
     apply_snapshot(controller.snapshot)
-    main_window.show()
+    if show_main_window:
+        main_window.show()
     top_bar.show()
 
     exit_code = app.exec()

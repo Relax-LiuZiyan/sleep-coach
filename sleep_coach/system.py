@@ -12,11 +12,14 @@ def build_startup_command(
     frozen: bool,
 ) -> str:
     if frozen:
-        return f'@echo off\r\ncd /d "{working_directory}"\r\nstart "" "{executable_path}"\r\n'
+        return f'@echo off\r\ncd /d "{working_directory}"\r\nstart "" "{executable_path}" --background\r\n'
 
     pythonw = executable_path.with_name("pythonw.exe")
     interpreter = pythonw if executable_path.name.lower() == "python.exe" else executable_path
-    return f'@echo off\r\ncd /d "{working_directory}"\r\nstart "" "{interpreter}" "{working_directory / "run.py"}"\r\n'
+    return (
+        f'@echo off\r\ncd /d "{working_directory}"\r\n'
+        f'start "" "{interpreter}" "{working_directory / "launch_sleep_coach.pyw"}" --background\r\n'
+    )
 
 
 def configure_launch_on_startup(enabled: bool, project_root: Path) -> None:

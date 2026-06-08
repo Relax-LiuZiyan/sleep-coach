@@ -11,7 +11,7 @@ def test_build_startup_command_uses_script_for_source_python_run():
     )
 
     assert 'cd /d "D:\\sleep"' in command
-    assert 'start "" "C:\\Python314\\pythonw.exe" "D:\\sleep\\run.py"' in command
+    assert 'start "" "C:\\Python314\\pythonw.exe" "D:\\sleep\\launch_sleep_coach.pyw" --background' in command
 
 
 def test_build_startup_command_uses_executable_for_frozen_build():
@@ -22,5 +22,5 @@ def test_build_startup_command_uses_executable_for_frozen_build():
     )
 
     assert 'cd /d "C:\\Program Files\\Sleep Coach"' in command
-    assert 'start "" "C:\\Program Files\\Sleep Coach\\SleepCoach.exe"' in command
+    assert 'start "" "C:\\Program Files\\Sleep Coach\\SleepCoach.exe" --background' in command
     assert "run.py" not in command

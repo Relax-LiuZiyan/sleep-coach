@@ -10,6 +10,7 @@ from ..schedule import LATE_NIGHT_WRAP_HOUR, parse_clock, to_clock_minutes
 DAYTIME_TOP_BAR_COPY = "白天先稳住，晚上按计划收尾。"
 PRE_SLEEP_TOP_BAR_COPY = "开始收心，别把今晚又拖烂。"
 PRE_SLEEP_WINDOW_MINUTES = 150
+ATTENTION_STAGES = {"warning", "overtime", "fullscreen", "penalty"}
 
 
 class TopBarWindow(QWidget):
@@ -145,5 +146,6 @@ class TopBarWindow(QWidget):
             )
 
     def apply_settings(self, snapshot: Snapshot) -> None:
-        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, snapshot.settings.top_bar_always_on_top)
+        force_on_top = snapshot.settings.top_bar_always_on_top or snapshot.stage in ATTENTION_STAGES
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, force_on_top)
         self.show()
